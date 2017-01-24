@@ -107,11 +107,13 @@ end;
 procedure TfrmMain.btnClearProxyListClick(Sender: TObject);
 begin
   lvProxyList.Items.Clear;
+  SaveSettings;
 end;
 
 procedure TfrmMain.btnDeleteProxyClick(Sender: TObject);
 begin
   lvProxyList.DeleteSelected;
+  SaveSettings;
 end;
 
 procedure TfrmMain.btnDeleteSelectedTokenClick(Sender: TObject);
@@ -120,7 +122,6 @@ begin
   begin
     Dispose(PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]));
     lbTokens.DeleteSelected;
-    ShowMessage(lbTokens.Items.Count.ToString);
     SaveSettings;
   end;
 
@@ -344,11 +345,10 @@ procedure TfrmMain.LoadSettings;
 var
   iniFile: TIniFile;
   i: Integer;
-  Tokens, Notes: TStringList;
+  Tokens, Notes, Hosts, Ports, Types, Users, Passwords: TStringList;
   TokenData: PTokenData;
+  ListItem: TListItem;
 begin
-  Tokens := TStringList.Create;
-  Notes := TStringList.Create;
   iniFile := TIniFile.Create(AppWorkDir + '\settings.ini');
   PathToClient := iniFile.ReadString('Client', 'Path', '');
   lbePathToClient.Text := PathToClient;
@@ -357,6 +357,8 @@ begin
   cbAutoPlay.Tag := 0;
   if (iniFile.SectionExists('Tokens') and iniFile.SectionExists('Notes')) then
   begin
+    Tokens := TStringList.Create;
+    Notes := TStringList.Create;
     iniFile.ReadSectionValues('Tokens', Tokens);
     iniFile.ReadSectionValues('Notes', Notes);
     lbTokens.Clear;
@@ -367,8 +369,41 @@ begin
       lbTokens.AddItem(StringReplace(Notes[i], 'Note' + IntToStr(i + 1) + '=', '', [rfReplaceAll]), TObject(TokenData));
     end;
   end;
+  if (iniFile.SectionExists('ProxyHosts') and iniFile.SectionExists('ProxyPorts') and
+      iniFile.SectionExists('ProxyTypes') and iniFile.SectionExists('ProxyUsers') and
+      iniFile.SectionExists('ProxyPasswords')) then
+  begin
+    Hosts := TStringList.Create;
+    Ports := TStringList.Create;
+    Types := TStringList.Create;
+    Users := TStringList.Create;
+    Passwords := TStringList.Create;
+    iniFile.ReadSectionValues('ProxyHosts', Hosts);
+    iniFile.ReadSectionValues('ProxyPorts', Ports);
+    iniFile.ReadSectionValues('ProxyTypes', Types);
+    iniFile.ReadSectionValues('ProxyUsers', Users);
+    iniFile.ReadSectionValues('ProxyPasswords', Passwords);
+    lvProxyList.Items.Clear;
+    for i := 0 to Hosts.Count - 1 do
+    begin
+      ListItem := lvProxyList.Items.Add;
+      ListItem.Caption := StringReplace(Hosts[i], 'Host' + IntToStr(i + 1) + '=', '', [rfReplaceAll]);
+      with ListItem.SubItems do
+      begin
+        Add(StringReplace(Ports[i], 'Port' + IntToStr(i + 1) + '=', '', [rfReplaceAll]));
+        Add(StringReplace(Types[i], 'Type' + IntToStr(i + 1) + '=', '', [rfReplaceAll]));
+        Add(StringReplace(Users[i], 'User' + IntToStr(i + 1) + '=', '', [rfReplaceAll]));
+        Add(StringReplace(Passwords[i], 'Password' + IntToStr(i + 1) + '=', '', [rfReplaceAll]));
+      end;
+    end;
+  end;
   Tokens.Free;
   Notes.Free;
+  Hosts.Free;
+  Ports.Free;
+  Types.Free;
+  Users.Free;
+  Passwords.Free;
   iniFile.Free;
 end;
 
