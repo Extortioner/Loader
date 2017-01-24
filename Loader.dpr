@@ -2,7 +2,9 @@ program Loader;
 
 uses
   Vcl.Forms,
-  mainform in 'mainform.pas' {frmMain};
+  mainform in 'mainform.pas' {frmMain},
+  addproxyform in 'addproxyform.pas' {frmAddProxy},
+  proxydestform in 'proxydestform.pas' {frmProxyDestination};
 
 {$R *.res}
 

@@ -28,6 +28,14 @@ type
     lbTokens: TListBox;
     TrayIcon: TTrayIcon;
     ApplicationEvents: TApplicationEvents;
+    btnAddProxy: TButton;
+    lvProxyList: TListView;
+    lblProxyList: TLabel;
+    btnDeleteProxy: TButton;
+    btnClearProxyList: TButton;
+    btnTestProxy: TButton;
+    btnSaveProxyToClient: TButton;
+    btnSetDefaultProxySettings: TButton;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -41,6 +49,11 @@ type
     procedure TrayIconClick(Sender: TObject);
     procedure ApplicationEventsMinimize(Sender: TObject);
     procedure btnRunClick(Sender: TObject);
+    procedure btnAddProxyClick(Sender: TObject);
+    procedure btnSaveProxyToClientClick(Sender: TObject);
+    procedure btnClearProxyListClick(Sender: TObject);
+    procedure btnDeleteProxyClick(Sender: TObject);
+    procedure btnSetDefaultProxySettingsClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +62,7 @@ type
     procedure RunWithToken(token: String);
     procedure SaveSettings;
     procedure LoadSettings;
+    procedure SaveProxy(Filename, ProxyHost, ProxyPort, ProxyType, ProxyUser, ProxyPassword: String);
   end;
 
   PTokenData = ^TTokenData;
@@ -65,6 +79,8 @@ var
 implementation
 
 {$R *.dfm}
+
+uses addproxyform, proxydestform;
 
 procedure TfrmMain.ApplicationEventsMinimize(Sender: TObject);
 begin
@@ -86,6 +102,16 @@ procedure TfrmMain.btnClearListClick(Sender: TObject);
 begin
   lbTokens.Items.Clear;
   SaveSettings;
+end;
+
+procedure TfrmMain.btnClearProxyListClick(Sender: TObject);
+begin
+  lvProxyList.Items.Clear;
+end;
+
+procedure TfrmMain.btnDeleteProxyClick(Sender: TObject);
+begin
+  lvProxyList.DeleteSelected;
 end;
 
 procedure TfrmMain.btnDeleteSelectedTokenClick(Sender: TObject);
@@ -118,6 +144,67 @@ begin
     MessageBox(Handle, 'Сначала выберите аккаунт', 'Внимание', MB_ICONWARNING + MB_OK);
 end;
 
+procedure TfrmMain.btnSaveProxyToClientClick(Sender: TObject);
+var
+  frmProxyDest: TfrmProxyDestination;
+  selectedIndex: Integer;
+begin
+  if lvProxyList.ItemIndex >= 0 then
+  begin
+    frmProxyDest := TfrmProxyDestination.Create(Self);
+    if frmProxyDest.ShowModal = mrOk then
+    begin
+      selectedIndex := frmProxyDest.SelectedIndex;
+      case selectedIndex of
+        0 : begin
+              SaveProxy(PathToClient + '\asterios\asteriosgame.ini', lvProxyList.Selected.Caption,
+                        lvProxyList.Selected.SubItems[0], lvProxyList.Selected.SubItems[1],
+                        lvProxyList.Selected.SubItems[2], lvProxyList.Selected.SubItems[3]);
+            end;
+        1 : begin
+              SaveProxy(PathToClient + '\asterios.ini', lvProxyList.Selected.Caption,
+                        lvProxyList.Selected.SubItems[0], lvProxyList.Selected.SubItems[1],
+                        lvProxyList.Selected.SubItems[2], lvProxyList.Selected.SubItems[3]);
+            end;
+        2 : begin
+              SaveProxy(PathToClient + '\asterios\asteriosgame.ini', lvProxyList.Selected.Caption,
+                        lvProxyList.Selected.SubItems[0], lvProxyList.Selected.SubItems[1],
+                        lvProxyList.Selected.SubItems[2], lvProxyList.Selected.SubItems[3]);
+              SaveProxy(PathToClient + '\asterios.ini', lvProxyList.Selected.Caption,
+                        lvProxyList.Selected.SubItems[0], lvProxyList.Selected.SubItems[1],
+                        lvProxyList.Selected.SubItems[2], lvProxyList.Selected.SubItems[3]);
+            end;
+      end;
+      frmProxyDest.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.btnSetDefaultProxySettingsClick(Sender: TObject);
+var
+  frmProxyDest: TfrmProxyDestination;
+  selectedIndex: Integer;
+begin
+  frmProxyDest := TfrmProxyDestination.Create(Self);
+  if frmProxyDest.ShowModal = mrOk then
+  begin
+    selectedIndex := frmProxyDest.SelectedIndex;
+    case selectedIndex of
+      0 : begin
+            SaveProxy(PathToClient + '\asterios\asteriosgame.ini', '', '', 'NONE', '', '');
+          end;
+      1 : begin
+            SaveProxy(PathToClient + '\asterios.ini', '', '', 'NONE', '', '');
+          end;
+      2 : begin
+            SaveProxy(PathToClient + '\asterios\asteriosgame.ini', '', '', 'NONE', '', '');
+            SaveProxy(PathToClient + '\asterios.ini', '', '', 'NONE', '', '');
+          end;
+    end;
+    frmProxyDest.Free;
+  end;
+end;
+
 procedure TfrmMain.btnSetPathToClientClick(Sender: TObject);
 begin
   if OD.Execute then
@@ -127,6 +214,28 @@ begin
     ReadCurrentToken;
     SaveSettings;
   end;
+end;
+
+procedure TfrmMain.btnAddProxyClick(Sender: TObject);
+var
+  frmNewProxy: TfrmAddProxy;
+  ListItem: TListItem;
+begin
+  frmNewProxy := TfrmAddProxy.Create(Self);
+  if frmNewProxy.ShowModal = mrOk then
+  begin
+    ListItem := lvProxyList.Items.Add;
+    ListItem.Caption := frmNewProxy.ProxyHost;
+    with ListItem.SubItems do
+    begin
+      Add(frmNewProxy.ProxyPort.ToString);
+      Add(frmNewProxy.ProxyType);
+      Add(frmNewProxy.ProxyUser);
+      Add(frmNewProxy.ProxyPassword);
+    end;
+    SaveSettings;
+  end;
+  frmNewProxy.Free;
 end;
 
 procedure TfrmMain.ReadCurrentToken;
@@ -171,6 +280,22 @@ begin
       TokenData := PTokenData(lbTokens.Items.Objects[i]);
       iniFile.WriteString('Tokens', 'Token' + IntToStr(i + 1), TokenData.Token);
       iniFile.WriteString('Notes', 'Note' + IntToStr(i + 1), lbTokens.Items[i]);
+    end;
+  end;
+  if lvProxyList.Items.Count > 0 then
+  begin
+    inifile.EraseSection('ProxyHosts');
+    inifile.EraseSection('ProxyPorts');
+    inifile.EraseSection('ProxyTypes');
+    inifile.EraseSection('ProxyUsers');
+    inifile.EraseSection('ProxyPasswords');
+    for i := 0 to lvProxyList.Items.Count - 1 do
+    begin
+      iniFile.WriteString('ProxyHosts', 'Host' + IntToStr(i + 1), lvProxyList.Items[i].Caption);
+      iniFile.WriteString('ProxyPorts', 'Port' + IntToStr(i + 1), lvProxyList.Items[i].SubItems[0]);
+      iniFile.WriteString('ProxyTypes', 'Type' + IntToStr(i + 1), lvProxyList.Items[i].SubItems[1]);
+      iniFile.WriteString('ProxyUsers', 'User' + IntToStr(i + 1), lvProxyList.Items[i].SubItems[2]);
+      iniFile.WriteString('ProxyPasswords', 'Password' + IntToStr(i + 1), lvProxyList.Items[i].SubItems[3]);
     end;
   end;
   iniFile.Free;
@@ -244,6 +369,19 @@ begin
   end;
   Tokens.Free;
   Notes.Free;
+  iniFile.Free;
+end;
+
+procedure TfrmMain.SaveProxy(Filename, ProxyHost,ProxyPort, ProxyType, ProxyUser, ProxyPassword: String);
+var
+  iniFile: TIniFile;
+begin
+  iniFile := TIniFile.Create(Filename);
+  iniFile.WriteString('Proxy', 'Host', ProxyHost);
+  iniFile.WriteString('Proxy', 'Port', ProxyPort);
+  iniFile.WriteString('Proxy', 'Protocol', ProxyType);
+  iniFile.WriteString('Proxy', 'User', ProxyUser);
+  iniFile.WriteString('Proxy', 'Pass', ProxyPassword);
   iniFile.Free;
 end;
 
