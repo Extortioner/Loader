@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.ComCtrls, System.IniFiles, ShellAPI, Vcl.AppEvnts;
+  Vcl.ComCtrls, System.IniFiles, ShellAPI, Vcl.AppEvnts, Vcl.Menus;
 
 type
   TfrmMain = class(TForm)
@@ -36,6 +36,11 @@ type
     btnTestProxy: TButton;
     btnSaveProxyToClient: TButton;
     btnSetDefaultProxySettings: TButton;
+    pmTrayMenu: TPopupMenu;
+    miLastToken: TMenuItem;
+    miOpenApp: TMenuItem;
+    N3: TMenuItem;
+    miExit: TMenuItem;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -54,6 +59,9 @@ type
     procedure btnClearProxyListClick(Sender: TObject);
     procedure btnDeleteProxyClick(Sender: TObject);
     procedure btnSetDefaultProxySettingsClick(Sender: TObject);
+    procedure miExitClick(Sender: TObject);
+    procedure miLastTokenClick(Sender: TObject);
+    procedure btnGetTokenClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -75,6 +83,7 @@ var
   PathToClient: string = '';
   AppWorkDir: string = '';
   CurrentComment: string = '';
+  LastToken: string = '';
 
 implementation
 
@@ -127,6 +136,11 @@ begin
 
 end;
 
+procedure TfrmMain.btnGetTokenClick(Sender: TObject);
+begin
+  ReadCurrentToken;
+end;
+
 procedure TfrmMain.btnReloadTokensClick(Sender: TObject);
 begin
   LoadSettings;
@@ -139,7 +153,8 @@ begin
   if lbTokens.ItemIndex >= 0 then
   begin
     TokenData := PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]);
-    RunWithToken(TokenData.Token);
+    LastToken := TokenData.Token;
+    RunWithToken(LastToken);
   end
   else
     MessageBox(Handle, 'Сначала выберите аккаунт', 'Внимание', MB_ICONWARNING + MB_OK);
@@ -338,7 +353,8 @@ var
   TokenData: PTokenData;
 begin
   TokenData := PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]);
-  RunWithToken(TokenData.Token);
+  LastToken := TokenData.Token;
+  RunWithToken(LastToken);
 end;
 
 procedure TfrmMain.LoadSettings;
@@ -405,6 +421,16 @@ begin
   Users.Free;
   Passwords.Free;
   iniFile.Free;
+end;
+
+procedure TfrmMain.miExitClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TfrmMain.miLastTokenClick(Sender: TObject);
+begin
+  RunWithToken(LastToken);
 end;
 
 procedure TfrmMain.SaveProxy(Filename, ProxyHost,ProxyPort, ProxyType, ProxyUser, ProxyPassword: String);
