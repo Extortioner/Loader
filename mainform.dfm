@@ -2,9 +2,11 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'Loader'
-  ClientHeight = 385
-  ClientWidth = 618
+  ClientHeight = 396
+  ClientWidth = 514
   Color = clBtnFace
+  Constraints.MinHeight = 435
+  Constraints.MinWidth = 530
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -7418,29 +7420,29 @@ object frmMain: TfrmMain
     0000000100008001000080010000C0030000E0070000F00E0000FE7F0000}
   OldCreateOrder = False
   Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   DesignSize = (
-    618
-    385)
+    514
+    396)
   PixelsPerInch = 96
   TextHeight = 13
   object btnSetPathToClient: TSpeedButton
-    Left = 583
-    Top = 20
+    Left = 479
+    Top = 15
     Width = 24
     Height = 22
     Anchors = [akTop, akRight]
     Caption = '...'
     OnClick = btnSetPathToClientClick
-    ExplicitLeft = 395
   end
   object pcPages: TPageControl
     Left = 0
-    Top = 48
-    Width = 618
-    Height = 337
+    Top = 43
+    Width = 514
+    Height = 348
     ActivePage = tsLogin
     Align = alBottom
     Anchors = [akLeft, akTop, akRight, akBottom]
@@ -7448,8 +7450,8 @@ object frmMain: TfrmMain
     object tsLogin: TTabSheet
       Caption = #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103
       DesignSize = (
-        610
-        309)
+        506
+        320)
       object lblSavedTokens: TLabel
         Left = 4
         Top = 96
@@ -7460,7 +7462,7 @@ object frmMain: TfrmMain
       object lbeCurrentToken: TLabeledEdit
         Left = 4
         Top = 17
-        Width = 509
+        Width = 405
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 88
@@ -7471,7 +7473,7 @@ object frmMain: TfrmMain
       object lbeComment: TLabeledEdit
         Left = 4
         Top = 63
-        Width = 509
+        Width = 405
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 71
@@ -7480,7 +7482,7 @@ object frmMain: TfrmMain
         TabOrder = 1
       end
       object btnGetToken: TButton
-        Left = 519
+        Left = 415
         Top = 15
         Width = 82
         Height = 25
@@ -7490,7 +7492,7 @@ object frmMain: TfrmMain
         OnClick = btnGetTokenClick
       end
       object btnAddTokenToList: TButton
-        Left = 519
+        Left = 415
         Top = 61
         Width = 82
         Height = 25
@@ -7500,7 +7502,7 @@ object frmMain: TfrmMain
         OnClick = btnAddTokenToListClick
       end
       object btnReloadTokens: TButton
-        Left = 519
+        Left = 415
         Top = 121
         Width = 82
         Height = 25
@@ -7510,7 +7512,7 @@ object frmMain: TfrmMain
         OnClick = btnReloadTokensClick
       end
       object btnDeleteSelectedToken: TButton
-        Left = 519
+        Left = 415
         Top = 152
         Width = 82
         Height = 25
@@ -7520,7 +7522,7 @@ object frmMain: TfrmMain
         OnClick = btnDeleteSelectedTokenClick
       end
       object btnClearList: TButton
-        Left = 519
+        Left = 415
         Top = 183
         Width = 82
         Height = 25
@@ -7530,7 +7532,7 @@ object frmMain: TfrmMain
         OnClick = btnClearListClick
       end
       object cbAutoPlay: TCheckBox
-        Left = 519
+        Left = 415
         Top = 214
         Width = 97
         Height = 17
@@ -7540,8 +7542,8 @@ object frmMain: TfrmMain
         OnClick = cbAutoPlayClick
       end
       object btnRun: TButton
-        Left = 519
-        Top = 281
+        Left = 415
+        Top = 292
         Width = 82
         Height = 25
         Anchors = [akRight, akBottom]
@@ -7552,8 +7554,8 @@ object frmMain: TfrmMain
       object lbTokens: TListBox
         Left = 4
         Top = 115
-        Width = 509
-        Height = 191
+        Width = 405
+        Height = 202
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         TabOrder = 9
@@ -7564,8 +7566,8 @@ object frmMain: TfrmMain
       Caption = #1055#1088#1086#1082#1089#1080
       ImageIndex = 1
       DesignSize = (
-        610
-        309)
+        506
+        320)
       object lblProxyList: TLabel
         Left = 3
         Top = 3
@@ -7575,9 +7577,10 @@ object frmMain: TfrmMain
       end
       object btnAddProxy: TButton
         Left = 3
-        Top = 281
+        Top = 290
         Width = 75
         Height = 25
+        Anchors = [akLeft, akBottom]
         Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '
         TabOrder = 0
         OnClick = btnAddProxyClick
@@ -7585,8 +7588,8 @@ object frmMain: TfrmMain
       object lvProxyList: TListView
         Left = 3
         Top = 22
-        Width = 604
-        Height = 253
+        Width = 500
+        Height = 264
         Anchors = [akLeft, akTop, akRight, akBottom]
         Columns = <
           item
@@ -7619,46 +7622,50 @@ object frmMain: TfrmMain
       end
       object btnDeleteProxy: TButton
         Left = 84
-        Top = 281
+        Top = 290
         Width = 75
         Height = 25
+        Anchors = [akLeft, akBottom]
         Caption = #1059#1076#1072#1083#1080#1090#1100
         TabOrder = 2
         OnClick = btnDeleteProxyClick
       end
       object btnClearProxyList: TButton
         Left = 165
-        Top = 281
+        Top = 290
         Width = 75
         Height = 25
+        Anchors = [akLeft, akBottom]
         Caption = #1054#1095#1080#1089#1090#1080#1090#1100
         TabOrder = 3
         OnClick = btnClearProxyListClick
       end
       object btnTestProxy: TButton
         Left = 246
-        Top = 281
+        Top = 290
         Width = 75
         Height = 25
+        Anchors = [akLeft, akBottom]
         Caption = #1058#1077#1089#1090' '#1087#1088#1086#1082#1089#1080
         Enabled = False
         TabOrder = 4
       end
       object btnSaveProxyToClient: TButton
-        Left = 532
-        Top = 281
+        Left = 428
+        Top = 290
         Width = 75
         Height = 25
-        Anchors = [akTop, akRight]
+        Anchors = [akRight, akBottom]
         Caption = #1042#1099#1073#1088#1072#1090#1100
         TabOrder = 5
         OnClick = btnSaveProxyToClientClick
       end
       object btnSetDefaultProxySettings: TButton
-        Left = 440
-        Top = 281
-        Width = 86
+        Left = 333
+        Top = 290
+        Width = 90
         Height = 25
+        Anchors = [akRight, akBottom]
         Caption = #1055#1086'-'#1091#1084#1086#1083#1095#1072#1085#1080#1102
         TabOrder = 6
         OnClick = btnSetDefaultProxySettingsClick
@@ -7667,8 +7674,8 @@ object frmMain: TfrmMain
   end
   object lbePathToClient: TLabeledEdit
     Left = 8
-    Top = 21
-    Width = 570
+    Top = 16
+    Width = 466
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 83
