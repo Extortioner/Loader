@@ -99,17 +99,13 @@
         </DelphiCompile>
         <DCCReference Include="mainform.pas">
             <Form>frmMain</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="addproxyform.pas">
             <Form>frmAddProxy</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="proxydestform.pas">
             <Form>frmProxyDestination</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <None Include="Bin\Loader.exe"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
