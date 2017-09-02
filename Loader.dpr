@@ -5,7 +5,8 @@ uses
   Winapi.Windows,
   mainform in 'mainform.pas' {frmMain},
   addproxyform in 'addproxyform.pas' {frmAddProxy},
-  proxydestform in 'proxydestform.pas' {frmProxyDestination};
+  proxydestform in 'proxydestform.pas' {frmProxyDestination},
+  testproxyform in 'testproxyform.pas' {frmTestProxy};
 
 {$R *.res}
 

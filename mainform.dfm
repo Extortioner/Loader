@@ -7440,10 +7440,10 @@ object frmMain: TfrmMain
   end
   object pcPages: TPageControl
     Left = 0
-    Top = 43
+    Top = 48
     Width = 514
     Height = 348
-    ActivePage = tsLogin
+    ActivePage = tsProxy
     Align = alBottom
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
@@ -7647,8 +7647,8 @@ object frmMain: TfrmMain
         Height = 25
         Anchors = [akLeft, akBottom]
         Caption = #1058#1077#1089#1090' '#1087#1088#1086#1082#1089#1080
-        Enabled = False
         TabOrder = 4
+        OnClick = btnTestProxyClick
       end
       object btnSaveProxyToClient: TButton
         Left = 428
@@ -15125,5 +15125,12 @@ object frmMain: TfrmMain
       Caption = #1042#1099#1093#1086#1076
       OnClick = miExitClick
     end
+  end
+  object Timer: TTimer
+    Enabled = False
+    Interval = 10000
+    OnTimer = TimerTimer
+    Left = 196
+    Top = 280
   end
 end

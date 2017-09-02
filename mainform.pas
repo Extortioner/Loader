@@ -41,6 +41,7 @@ type
     miOpenApp: TMenuItem;
     N3: TMenuItem;
     miExit: TMenuItem;
+    Timer: TTimer;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -62,6 +63,8 @@ type
     procedure miExitClick(Sender: TObject);
     procedure miLastTokenClick(Sender: TObject);
     procedure btnGetTokenClick(Sender: TObject);
+    procedure btnTestProxyClick(Sender: TObject);
+    procedure TimerTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -89,7 +92,7 @@ implementation
 
 {$R *.dfm}
 
-uses addproxyform, proxydestform;
+uses addproxyform, proxydestform, testproxyform;
 
 procedure TfrmMain.ApplicationEventsMinimize(Sender: TObject);
 begin
@@ -232,6 +235,23 @@ begin
   end;
 end;
 
+procedure TfrmMain.btnTestProxyClick(Sender: TObject);
+var
+  frmTestProxy: TfrmTestProxy;
+  i: Integer;
+  proxyList: TStringList;
+begin
+  proxyList := TStringList.Create;
+  frmTestProxy := TfrmTestProxy.Create(Self);
+  for i := 0 to lvProxyList.Items.Count - 1 do
+    proxyList.Add(lvProxyList.Items[i].Caption);
+  frmTestProxy.ProxyList := proxyList;
+  frmTestProxy.ShowModal;
+  btnTestProxy.Enabled := False;
+  Timer.Enabled := True;
+  frmTestProxy.Free;
+end;
+
 procedure TfrmMain.btnAddProxyClick(Sender: TObject);
 var
   frmNewProxy: TfrmAddProxy;
@@ -315,6 +335,12 @@ begin
     end;
   end;
   iniFile.Free;
+end;
+
+procedure TfrmMain.TimerTimer(Sender: TObject);
+begin
+  btnTestProxy.Enabled := True;
+  Timer.Enabled := False;
 end;
 
 procedure TfrmMain.TrayIconClick(Sender: TObject);
