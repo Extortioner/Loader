@@ -42,6 +42,7 @@ type
     N3: TMenuItem;
     miExit: TMenuItem;
     Timer: TTimer;
+    cbAutoHide: TCheckBox;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -65,6 +66,7 @@ type
     procedure btnGetTokenClick(Sender: TObject);
     procedure btnTestProxyClick(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
+    procedure cbAutoHideClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -295,7 +297,8 @@ begin
   if cbAutoPlay.Checked then
     params := '/autoplay';
   ShellExecute(0,'open', PChar(PathToClient + '\Asterios.exe'), PChar(params), PChar(PathToClient),1);
-  Application.Minimize;
+  if cbAutoHide.Checked = True then
+    Application.Minimize;
 end;
 
 procedure TfrmMain.SaveSettings;
@@ -307,6 +310,7 @@ begin
   iniFile := TIniFile.Create(AppWorkDir + '\settings.ini');
   iniFile.WriteString('Client', 'Path', PathToClient);
   iniFile.WriteBool('Client', 'Autoplay', cbAutoPlay.Checked);
+  iniFile.WriteBool('Client', 'Autohide', cbAutoHide.Checked);
   iniFile.EraseSection('Tokens');
   iniFile.EraseSection('Notes');
   if lbTokens.Items.Count > 0 then
@@ -349,9 +353,15 @@ begin
   TrayIcon.Visible := False;
 end;
 
+procedure TfrmMain.cbAutoHideClick(Sender: TObject);
+begin
+  if (cbAutoHide.Tag = 0) then
+    SaveSettings;
+end;
+
 procedure TfrmMain.cbAutoPlayClick(Sender: TObject);
 begin
-  if cbAutoPlay.Tag = 0 then
+  if (cbAutoPlay.Tag = 0) then
     SaveSettings;
 end;
 
@@ -378,9 +388,12 @@ procedure TfrmMain.lbTokensDblClick(Sender: TObject);
 var
   TokenData: PTokenData;
 begin
-  TokenData := PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]);
-  LastToken := TokenData.Token;
-  RunWithToken(LastToken);
+  if (lvProxyList.Selected <> nil) then
+  begin
+    TokenData := PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]);
+    LastToken := TokenData.Token;
+    RunWithToken(LastToken);
+  end;
 end;
 
 procedure TfrmMain.LoadSettings;
@@ -395,8 +408,11 @@ begin
   PathToClient := iniFile.ReadString('Client', 'Path', '');
   lbePathToClient.Text := PathToClient;
   cbAutoPlay.Tag := 1;
+  cbAutoHide.Tag := 1;
   cbAutoPlay.Checked := iniFile.ReadBool('Client', 'Autoplay', False);
+  cbAutoHide.Checked := iniFile.ReadBool('Client', 'Autohide', False);
   cbAutoPlay.Tag := 0;
+  cbAutoHide.Tag := 0;
   if (iniFile.SectionExists('Tokens') and iniFile.SectionExists('Notes')) then
   begin
     Tokens := TStringList.Create;

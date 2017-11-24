@@ -45,7 +45,6 @@ begin
     Sleep(500);
   end;
   lbProxyList.Items.Add('Тест окончен.');
-  ProxyList.Free;
   btnTest.Enabled := True;
 end;
 
