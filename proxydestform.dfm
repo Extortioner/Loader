@@ -13,6 +13,7 @@ object frmProxyDestination: TfrmProxyDestination
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  Scaled = False
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
@@ -38,8 +39,6 @@ object frmProxyDestination: TfrmProxyDestination
         #1044#1083#1103' '#1072#1087#1076#1077#1081#1090#1077#1088#1072
         #1044#1083#1103' '#1074#1089#1077#1075#1086)
       TabOrder = 0
-      ExplicitLeft = 2
-      ExplicitTop = 5
     end
   end
   object bntOK: TButton

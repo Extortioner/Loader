@@ -7424,35 +7424,21 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  DesignSize = (
-    524
-    396)
   PixelsPerInch = 96
   TextHeight = 13
-  object btnSetPathToClient: TSpeedButton
-    Left = 489
-    Top = 15
-    Width = 24
-    Height = 22
-    Anchors = [akTop, akRight]
-    Caption = '...'
-    OnClick = btnSetPathToClientClick
-    ExplicitLeft = 479
-  end
   object pcPages: TPageControl
     Left = 0
-    Top = 48
+    Top = 0
     Width = 524
-    Height = 348
+    Height = 396
     ActivePage = tsLogin
-    Align = alBottom
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Align = alClient
     TabOrder = 0
     object tsLogin: TTabSheet
       Caption = #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103
       DesignSize = (
         516
-        320)
+        368)
       object lblSavedTokens: TLabel
         Left = 4
         Top = 96
@@ -7544,7 +7530,7 @@ object frmMain: TfrmMain
       end
       object btnRun: TButton
         Left = 425
-        Top = 292
+        Top = 340
         Width = 82
         Height = 25
         Anchors = [akRight, akBottom]
@@ -7556,7 +7542,7 @@ object frmMain: TfrmMain
         Left = 4
         Top = 115
         Width = 415
-        Height = 202
+        Height = 250
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         TabOrder = 9
@@ -7577,9 +7563,13 @@ object frmMain: TfrmMain
     object tsProxy: TTabSheet
       Caption = #1055#1088#1086#1082#1089#1080
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         516
-        320)
+        368)
       object lblProxyList: TLabel
         Left = 3
         Top = 3
@@ -7589,7 +7579,7 @@ object frmMain: TfrmMain
       end
       object btnAddProxy: TButton
         Left = 3
-        Top = 290
+        Top = 338
         Width = 75
         Height = 25
         Anchors = [akLeft, akBottom]
@@ -7601,7 +7591,7 @@ object frmMain: TfrmMain
         Left = 3
         Top = 22
         Width = 510
-        Height = 264
+        Height = 312
         Anchors = [akLeft, akTop, akRight, akBottom]
         Columns = <
           item
@@ -7634,7 +7624,7 @@ object frmMain: TfrmMain
       end
       object btnDeleteProxy: TButton
         Left = 84
-        Top = 290
+        Top = 338
         Width = 75
         Height = 25
         Anchors = [akLeft, akBottom]
@@ -7644,7 +7634,7 @@ object frmMain: TfrmMain
       end
       object btnClearProxyList: TButton
         Left = 165
-        Top = 290
+        Top = 338
         Width = 75
         Height = 25
         Anchors = [akLeft, akBottom]
@@ -7654,7 +7644,7 @@ object frmMain: TfrmMain
       end
       object btnTestProxy: TButton
         Left = 246
-        Top = 290
+        Top = 338
         Width = 75
         Height = 25
         Anchors = [akLeft, akBottom]
@@ -7664,7 +7654,7 @@ object frmMain: TfrmMain
       end
       object btnSaveProxyToClient: TButton
         Left = 438
-        Top = 290
+        Top = 338
         Width = 75
         Height = 25
         Anchors = [akRight, akBottom]
@@ -7674,7 +7664,7 @@ object frmMain: TfrmMain
       end
       object btnSetDefaultProxySettings: TButton
         Left = 343
-        Top = 290
+        Top = 338
         Width = 90
         Height = 25
         Anchors = [akRight, akBottom]
@@ -7683,24 +7673,189 @@ object frmMain: TfrmMain
         OnClick = btnSetDefaultProxySettingsClick
       end
     end
-  end
-  object lbePathToClient: TLabeledEdit
-    Left = 8
-    Top = 16
-    Width = 476
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 83
-    EditLabel.Height = 13
-    EditLabel.Caption = #1055#1091#1090#1100' '#1082' '#1082#1083#1080#1077#1085#1090#1091':'
-    TabOrder = 1
+    object tsClientSettings: TTabSheet
+      Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1082#1083#1080#1077#1085#1090#1072
+      ImageIndex = 2
+      DesignSize = (
+        516
+        368)
+      object btnSetPathToClient: TSpeedButton
+        Left = 489
+        Top = 15
+        Width = 24
+        Height = 22
+        Anchors = [akTop, akRight]
+        Caption = '...'
+        OnClick = btnSetPathToClientClick
+        ExplicitLeft = 479
+      end
+      object lbePathToClient: TLabeledEdit
+        Left = 8
+        Top = 16
+        Width = 476
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        EditLabel.Width = 83
+        EditLabel.Height = 13
+        EditLabel.Caption = #1055#1091#1090#1100' '#1082' '#1082#1083#1080#1077#1085#1090#1091':'
+        TabOrder = 0
+      end
+      object gbClientSettings: TGroupBox
+        Left = 3
+        Top = 43
+        Width = 505
+        Height = 294
+        Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099
+        TabOrder = 1
+        object lblProcessPriority: TLabel
+          Left = 16
+          Top = 73
+          Width = 108
+          Height = 13
+          Caption = #1055#1088#1080#1086#1088#1080#1090#1077#1090' '#1087#1088#1086#1094#1077#1089#1089#1072':'
+        end
+        object lblCacheSizeMegs: TLabel
+          Left = 16
+          Top = 102
+          Width = 67
+          Height = 13
+          Caption = #1056#1072#1079#1084#1077#1088' '#1082#1101#1096#1072':'
+        end
+        object lblMegabytes: TLabel
+          Left = 207
+          Top = 102
+          Width = 14
+          Height = 13
+          Caption = #1052#1041
+        end
+        object lblReplayTimeLimit: TLabel
+          Left = 16
+          Top = 131
+          Width = 119
+          Height = 13
+          Caption = #1051#1080#1084#1080#1090' '#1074#1088#1077#1084#1077#1085#1080' '#1088#1077#1087#1083#1077#1103':'
+        end
+        object lblMins: TLabel
+          Left = 207
+          Top = 131
+          Width = 30
+          Height = 13
+          Caption = #1084#1080#1085#1091#1090
+        end
+        object lblContrast: TLabel
+          Left = 16
+          Top = 163
+          Width = 52
+          Height = 13
+          Caption = #1050#1086#1085#1090#1088#1072#1089#1090':'
+        end
+        object lblBrightness: TLabel
+          Left = 16
+          Top = 195
+          Width = 46
+          Height = 13
+          Caption = #1071#1088#1082#1086#1089#1090#1100':'
+        end
+        object lblGamma: TLabel
+          Left = 16
+          Top = 227
+          Width = 34
+          Height = 13
+          Caption = #1043#1072#1084#1084#1072':'
+        end
+        object cbUseWindowFrame: TCheckBox
+          Left = 16
+          Top = 24
+          Width = 97
+          Height = 17
+          Caption = #1054#1082#1085#1086' '#1089' '#1088#1072#1084#1082#1086#1081
+          TabOrder = 0
+          OnClick = cbUseWindowFrameClick
+        end
+        object cbUseJoystick: TCheckBox
+          Left = 16
+          Top = 47
+          Width = 145
+          Height = 17
+          Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1076#1078#1086#1081#1089#1090#1080#1082
+          TabOrder = 1
+          OnClick = cbUseJoystickClick
+        end
+        object cmbProcessPriority: TComboBox
+          Left = 144
+          Top = 70
+          Width = 121
+          Height = 21
+          Style = csDropDownList
+          ItemIndex = 2
+          TabOrder = 2
+          Text = 'NORMAL'
+          Items.Strings = (
+            'IDLE'
+            'BELOW_NORMAL'
+            'NORMAL'
+            'ABOVE_NORMAL'
+            'HIGH'
+            'REALTIME')
+        end
+        object cmbCacheSizeMegs: TComboBox
+          Left = 144
+          Top = 99
+          Width = 57
+          Height = 21
+          Style = csDropDownList
+          ItemIndex = 0
+          TabOrder = 3
+          Text = '32'
+          Items.Strings = (
+            '32'
+            '64'
+            '128'
+            '256'
+            '512'
+            '1024')
+        end
+        object edReplayTimeLimit: TEdit
+          Left = 144
+          Top = 128
+          Width = 57
+          Height = 21
+          NumbersOnly = True
+          TabOrder = 4
+        end
+        object edContrast: TEdit
+          Left = 74
+          Top = 160
+          Width = 57
+          Height = 21
+          TabOrder = 5
+          OnKeyPress = edContrastKeyPress
+        end
+        object edBrightness: TEdit
+          Left = 74
+          Top = 192
+          Width = 57
+          Height = 21
+          TabOrder = 6
+          OnKeyPress = edBrightnessKeyPress
+        end
+        object edGamma: TEdit
+          Left = 74
+          Top = 224
+          Width = 57
+          Height = 21
+          TabOrder = 7
+          OnKeyPress = edGammaKeyPress
+        end
+      end
+    end
   end
   object OD: TFileOpenDialog
     FavoriteLinks = <>
     FileTypes = <>
     Options = [fdoPickFolders]
-    Left = 156
-    Top = 16
+    Left = 84
+    Top = 344
   end
   object TrayIcon: TTrayIcon
     Icon.Data = {
@@ -15111,17 +15266,12 @@ object frmMain: TfrmMain
       0000000100008001000080010000C0030000E0070000F00E0000FE7F0000}
     PopupMenu = pmTrayMenu
     OnClick = TrayIconClick
-    Left = 236
-    Top = 8
-  end
-  object ApplicationEvents: TApplicationEvents
-    OnMinimize = ApplicationEventsMinimize
-    Left = 300
-    Top = 16
+    Left = 132
+    Top = 344
   end
   object pmTrayMenu: TPopupMenu
-    Left = 84
-    Top = 256
+    Left = 28
+    Top = 344
     object miLastToken: TMenuItem
       Caption = #1055#1086#1089#1083#1077#1076#1085#1080#1081' '#1079#1072#1087#1091#1097#1077#1085#1085#1099#1081
       OnClick = miLastTokenClick
@@ -15142,7 +15292,12 @@ object frmMain: TfrmMain
     Enabled = False
     Interval = 10000
     OnTimer = TimerTimer
-    Left = 196
-    Top = 280
+    Left = 172
+    Top = 344
+  end
+  object ApplicationEvents: TApplicationEvents
+    OnMinimize = ApplicationEventsMinimize
+    Left = 228
+    Top = 347
   end
 end

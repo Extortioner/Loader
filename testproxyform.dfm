@@ -13,6 +13,7 @@ object frmTestProxy: TfrmTestProxy
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  Scaled = False
   OnCreate = FormCreate
   DesignSize = (
     286

@@ -5,15 +5,14 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.ComCtrls, System.IniFiles, ShellAPI, Vcl.AppEvnts, Vcl.Menus;
+  Vcl.ComCtrls, System.IniFiles, ShellAPI, Vcl.AppEvnts, Vcl.Menus, Vcl.Mask,
+  Vcl.Samples.Spin;
 
 type
   TfrmMain = class(TForm)
     pcPages: TPageControl;
     tsLogin: TTabSheet;
     tsProxy: TTabSheet;
-    lbePathToClient: TLabeledEdit;
-    btnSetPathToClient: TSpeedButton;
     OD: TFileOpenDialog;
     lbeCurrentToken: TLabeledEdit;
     lbeComment: TLabeledEdit;
@@ -27,7 +26,6 @@ type
     btnRun: TButton;
     lbTokens: TListBox;
     TrayIcon: TTrayIcon;
-    ApplicationEvents: TApplicationEvents;
     btnAddProxy: TButton;
     lvProxyList: TListView;
     lblProxyList: TLabel;
@@ -43,6 +41,27 @@ type
     miExit: TMenuItem;
     Timer: TTimer;
     cbAutoHide: TCheckBox;
+    tsClientSettings: TTabSheet;
+    btnSetPathToClient: TSpeedButton;
+    lbePathToClient: TLabeledEdit;
+    gbClientSettings: TGroupBox;
+    ApplicationEvents: TApplicationEvents;
+    cbUseWindowFrame: TCheckBox;
+    cbUseJoystick: TCheckBox;
+    cmbProcessPriority: TComboBox;
+    cmbCacheSizeMegs: TComboBox;
+    lblProcessPriority: TLabel;
+    lblCacheSizeMegs: TLabel;
+    lblMegabytes: TLabel;
+    lblReplayTimeLimit: TLabel;
+    lblMins: TLabel;
+    edReplayTimeLimit: TEdit;
+    lblContrast: TLabel;
+    lblBrightness: TLabel;
+    lblGamma: TLabel;
+    edContrast: TEdit;
+    edBrightness: TEdit;
+    edGamma: TEdit;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -67,24 +86,39 @@ type
     procedure btnTestProxyClick(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
     procedure cbAutoHideClick(Sender: TObject);
+    procedure edContrastKeyPress(Sender: TObject; var Key: Char);
+    procedure edBrightnessKeyPress(Sender: TObject; var Key: Char);
+    procedure edGammaKeyPress(Sender: TObject; var Key: Char);
+    procedure cbUseWindowFrameClick(Sender: TObject);
+    procedure cbUseJoystickClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
     procedure ReadCurrentToken;
     procedure RunWithToken(token: String);
-    procedure SaveSettings;
-    procedure LoadSettings;
     procedure SaveProxy(Filename, ProxyHost, ProxyPort, ProxyType, ProxyUser, ProxyPassword: String);
+
+    //---------SETTINGS SECTION--------
+    //-----------application-----------
+    procedure SaveAppSettings;
+    procedure LoadAppSettings;
+    //-----------client----------------
+    procedure SaveClientSettings;
+    procedure LoadClientSettings;
+    //-----------updater---------------
+    //---------------------------------
+
   end;
 
   PTokenData = ^TTokenData;
   TTokenData = record
     Token: string;
   end;
+
 var
   frmMain: TfrmMain;
-  
+
   PathToClient: string = '';
   AppWorkDir: string = '';
   CurrentComment: string = '';
@@ -109,25 +143,25 @@ begin
   New(TokenData);
   TokenData.Token := lbeCurrentToken.Text;
   lbTokens.AddItem(lbeComment.Text, TObject(TokenData));
-  SaveSettings;
+  SaveAppSettings;
 end;
 
 procedure TfrmMain.btnClearListClick(Sender: TObject);
 begin
   lbTokens.Items.Clear;
-  SaveSettings;
+  SaveAppSettings;
 end;
 
 procedure TfrmMain.btnClearProxyListClick(Sender: TObject);
 begin
   lvProxyList.Items.Clear;
-  SaveSettings;
+  SaveAppSettings;
 end;
 
 procedure TfrmMain.btnDeleteProxyClick(Sender: TObject);
 begin
   lvProxyList.DeleteSelected;
-  SaveSettings;
+  SaveAppSettings;
 end;
 
 procedure TfrmMain.btnDeleteSelectedTokenClick(Sender: TObject);
@@ -136,7 +170,7 @@ begin
   begin
     Dispose(PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]));
     lbTokens.DeleteSelected;
-    SaveSettings;
+    SaveAppSettings;
   end;
 
 end;
@@ -148,7 +182,7 @@ end;
 
 procedure TfrmMain.btnReloadTokensClick(Sender: TObject);
 begin
-  LoadSettings;
+  LoadAppSettings;
 end;
 
 procedure TfrmMain.btnRunClick(Sender: TObject);
@@ -233,7 +267,7 @@ begin
     lbePathToClient.Text := OD.FileName;
     PathToClient := OD.FileName;
     ReadCurrentToken;
-    SaveSettings;
+    SaveAppSettings;
   end;
 end;
 
@@ -271,7 +305,7 @@ begin
       Add(frmNewProxy.ProxyUser);
       Add(frmNewProxy.ProxyPassword);
     end;
-    SaveSettings;
+    SaveAppSettings;
   end;
   frmNewProxy.Free;
 end;
@@ -301,7 +335,7 @@ begin
     Application.Minimize;
 end;
 
-procedure TfrmMain.SaveSettings;
+procedure TfrmMain.SaveAppSettings;
 var
   iniFile: TIniFile;
   i: Integer;
@@ -356,13 +390,82 @@ end;
 procedure TfrmMain.cbAutoHideClick(Sender: TObject);
 begin
   if (cbAutoHide.Tag = 0) then
-    SaveSettings;
+    SaveAppSettings;
 end;
 
 procedure TfrmMain.cbAutoPlayClick(Sender: TObject);
 begin
   if (cbAutoPlay.Tag = 0) then
-    SaveSettings;
+    SaveAppSettings;
+end;
+
+procedure TfrmMain.cbUseJoystickClick(Sender: TObject);
+begin
+  if (cbUseJoystick.Tag = 0) then
+    SaveClientSettings;
+end;
+
+procedure TfrmMain.cbUseWindowFrameClick(Sender: TObject);
+begin
+  if (cbUseWindowFrame.Tag = 0) then
+    SaveClientSettings;
+end;
+
+procedure TfrmMain.edBrightnessKeyPress(Sender: TObject; var Key: Char);
+begin
+  case Key of
+    #8,'0'..'9':
+            if length(edBrightness.Text) = 1 then
+              Key := '.'
+            else
+             if (Pos('.', edBrightness.Text) >= 0 ) and
+                (length(edBrightness.Text) - pos('.', edBrightness.Text) > 5) and
+                (Key <> #8) then Key := #0;
+    '.':  begin
+            if (Pos('.', edBrightness.Text) >= 0 ) or
+               (length(edBrightness.Text) = 0) then Key := #0;
+          end;
+    else
+     key := Chr(0);
+  end;
+end;
+
+procedure TfrmMain.edContrastKeyPress(Sender: TObject; var Key: Char);
+begin
+  case Key of
+    #8,'0'..'9':
+            if length(edContrast.Text) = 1 then
+              Key := '.'
+            else
+             if (Pos('.', edContrast.Text) >= 0 ) and
+                (length(edContrast.Text) - pos('.', edContrast.Text) > 5) and
+                (Key <> #8) then Key := #0;
+    '.':  begin
+            if (Pos('.', edContrast.Text) >= 0 ) or
+               (length(edContrast.Text) = 0) then Key := #0;
+          end;
+    else
+     key := Chr(0);
+  end;
+end;
+
+procedure TfrmMain.edGammaKeyPress(Sender: TObject; var Key: Char);
+begin
+  case Key of
+    #8,'0'..'9':
+            if length(edGamma.Text) = 1 then
+              Key := '.'
+            else
+             if (Pos('.', edGamma.Text) >= 0 ) and
+                (length(edGamma.Text) - pos('.', edGamma.Text) > 5) and
+                (Key <> #8) then Key := #0;
+    '.':  begin
+            if (Pos('.', edGamma.Text) >= 0 ) or
+               (length(edGamma.Text) = 0) then Key := #0;
+          end;
+    else
+     key := Chr(0);
+  end;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -380,8 +483,9 @@ end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
-  LoadSettings;
+  LoadAppSettings;
   ReadCurrentToken;
+  LoadClientSettings;
 end;
 
 procedure TfrmMain.lbTokensDblClick(Sender: TObject);
@@ -396,7 +500,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.LoadSettings;
+procedure TfrmMain.LoadAppSettings;
 var
   iniFile: TIniFile;
   i: Integer;
@@ -485,6 +589,61 @@ begin
   iniFile.WriteString('Proxy', 'Protocol', ProxyType);
   iniFile.WriteString('Proxy', 'User', ProxyUser);
   iniFile.WriteString('Proxy', 'Pass', ProxyPassword);
+  iniFile.Free;
+end;
+
+procedure TfrmMain.LoadClientSettings;
+var
+  iniFile: TIniFile;
+  priority: string;
+  cachesize: Word;
+  i: Integer;
+begin
+  iniFile := TIniFile.Create(PathToClient + '\asterios\asteriosgame.ini');
+  cbUseWindowFrame.Tag := 1;
+  cbUseJoystick.Tag := 1;
+  cbUseWindowFrame.Checked := iniFile.ReadBool('L2', 'UseWindowFrame', False);
+  cbUseJoystick.Checked := iniFile.ReadBool('L2', 'UseJoystick', False);
+  cbUseWindowFrame.Tag := 0;
+  cbUseJoystick.Tag := 0;
+  edContrast.Text := iniFile.ReadString('L2', 'Contrast', '0.00000');
+  edBrightness.Text := iniFile.ReadString('L2', 'Brightness', '0.00000');
+  edGamma.Text := iniFile.ReadString('L2', 'Gamma', '0.00000');
+  priority := iniFile.ReadString('Options', 'Priority', 'NORMAL').ToUpper;
+  for i := 0 to cmbProcessPriority.Items.Count - 1 do
+    if (cmbProcessPriority.Items[i] = priority) then
+    begin
+      cmbProcessPriority.ItemIndex := i;
+      break;
+    end
+    else
+      cmbProcessPriority.ItemIndex := 2;
+  cachesize := iniFile.ReadInteger('L2', 'CacheSizeMegs', 32);
+  for i := 0 to cmbCacheSizeMegs.Items.Count - 1 do
+    if (cmbCacheSizeMegs.Items[i] = cachesize.ToString) then
+    begin
+      cmbCacheSizeMegs.ItemIndex := i;
+      break;
+    end
+    else
+      cmbCacheSizeMegs.ItemIndex := 0;
+  edReplayTimeLimit.Text := iniFile.ReadInteger('Options', 'ReplayTimeLimit', 30).ToString;
+  iniFile.Free;
+end;
+
+procedure TfrmMain.SaveClientSettings;
+var
+  iniFile: TIniFile;
+begin
+  iniFile := TIniFile.Create(PathToClient + '\asterios\asteriosgame.ini');
+  iniFile.WriteBool('L2', 'UseWindowFrame', cbUseWindowFrame.Checked);
+  iniFile.WriteBool('L2', 'UseJoystick', cbUseJoystick.Checked);
+  iniFile.WriteString('L2', 'Contrast', edContrast.Text);
+  iniFile.WriteString('L2', 'Brightness', edBrightness.Text);
+  iniFile.WriteString('L2', 'Gamma', edGamma.Text);
+  iniFile.WriteString('L2', 'CacheSizeMegs', cmbCacheSizeMegs.Items[cmbCacheSizeMegs.ItemIndex]);
+  iniFile.WriteString('Options', 'Priority', cmbProcessPriority.Items[cmbProcessPriority.ItemIndex]);
+  iniFile.WriteString('Options', 'ReplayTimeLimit', edReplayTimeLimit.Text);
   iniFile.Free;
 end;
 
