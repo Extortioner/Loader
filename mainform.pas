@@ -492,7 +492,7 @@ procedure TfrmMain.lbTokensDblClick(Sender: TObject);
 var
   TokenData: PTokenData;
 begin
-  if (lvProxyList.Selected <> nil) then
+  if (lbTokens.ItemIndex >= 0) then
   begin
     TokenData := PTokenData(lbTokens.Items.Objects[lbTokens.ItemIndex]);
     LastToken := TokenData.Token;

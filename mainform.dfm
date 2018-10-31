@@ -7530,9 +7530,9 @@ object frmMain: TfrmMain
       end
       object btnRun: TButton
         Left = 425
-        Top = 340
+        Top = 304
         Width = 82
-        Height = 25
+        Height = 61
         Anchors = [akRight, akBottom]
         Caption = #1048#1075#1088#1072#1090#1100
         TabOrder = 8
@@ -7563,10 +7563,6 @@ object frmMain: TfrmMain
     object tsProxy: TTabSheet
       Caption = #1055#1088#1086#1082#1089#1080
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         516
         368)
