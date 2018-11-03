@@ -62,6 +62,7 @@ type
     edContrast: TEdit;
     edBrightness: TEdit;
     edGamma: TEdit;
+    btnRename: TButton;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -91,6 +92,7 @@ type
     procedure edGammaKeyPress(Sender: TObject; var Key: Char);
     procedure cbUseWindowFrameClick(Sender: TObject);
     procedure cbUseJoystickClick(Sender: TObject);
+    procedure btnRenameClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -183,6 +185,22 @@ end;
 procedure TfrmMain.btnReloadTokensClick(Sender: TObject);
 begin
   LoadAppSettings;
+end;
+
+procedure TfrmMain.btnRenameClick(Sender: TObject);
+var
+  oldName, newName: String;
+begin
+  if (lbTokens.ItemIndex >= 0) then
+  begin
+    oldName := lbTokens.Items[lbTokens.ItemIndex];
+    newName := InputBox('Переименовать', 'Новое название:', oldName);
+    if (newName <> oldName) then
+    begin
+      lbTokens.Items[lbTokens.ItemIndex] := newName;
+      SaveAppSettings;
+    end;
+  end;
 end;
 
 procedure TfrmMain.btnRunClick(Sender: TObject);

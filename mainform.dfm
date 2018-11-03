@@ -7420,7 +7420,6 @@ object frmMain: TfrmMain
     0000000100008001000080010000C0030000E0070000F00E0000FE7F0000}
   OldCreateOrder = False
   Position = poDesktopCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
@@ -7436,6 +7435,8 @@ object frmMain: TfrmMain
     TabOrder = 0
     object tsLogin: TTabSheet
       Caption = #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103
+      ExplicitLeft = 8
+      ExplicitTop = 28
       DesignSize = (
         516
         368)
@@ -7490,7 +7491,7 @@ object frmMain: TfrmMain
       end
       object btnReloadTokens: TButton
         Left = 425
-        Top = 121
+        Top = 92
         Width = 82
         Height = 25
         Anchors = [akTop, akRight]
@@ -7500,7 +7501,7 @@ object frmMain: TfrmMain
       end
       object btnDeleteSelectedToken: TButton
         Left = 425
-        Top = 152
+        Top = 185
         Width = 82
         Height = 25
         Anchors = [akTop, akRight]
@@ -7510,7 +7511,7 @@ object frmMain: TfrmMain
       end
       object btnClearList: TButton
         Left = 425
-        Top = 183
+        Top = 216
         Width = 82
         Height = 25
         Anchors = [akTop, akRight]
@@ -7520,7 +7521,7 @@ object frmMain: TfrmMain
       end
       object cbAutoPlay: TCheckBox
         Left = 425
-        Top = 214
+        Top = 247
         Width = 97
         Height = 17
         Anchors = [akTop, akRight]
@@ -7550,7 +7551,7 @@ object frmMain: TfrmMain
       end
       object cbAutoHide: TCheckBox
         Left = 425
-        Top = 237
+        Top = 270
         Width = 85
         Height = 28
         Anchors = [akTop, akRight]
@@ -7558,6 +7559,16 @@ object frmMain: TfrmMain
         TabOrder = 10
         WordWrap = True
         OnClick = cbAutoHideClick
+      end
+      object btnRename: TButton
+        Left = 425
+        Top = 142
+        Width = 82
+        Height = 25
+        Anchors = [akTop, akRight]
+        Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+        TabOrder = 11
+        OnClick = btnRenameClick
       end
     end
     object tsProxy: TTabSheet
