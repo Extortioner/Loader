@@ -104,7 +104,6 @@ object frmAddProxy: TfrmAddProxy
       EditLabel.Width = 37
       EditLabel.Height = 13
       EditLabel.Caption = #1055#1072#1088#1086#1083#1100
-      PasswordChar = '*'
       TabOrder = 4
     end
   end

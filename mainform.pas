@@ -37,7 +37,7 @@ type
     pmTrayMenu: TPopupMenu;
     miLastToken: TMenuItem;
     miOpenApp: TMenuItem;
-    N3: TMenuItem;
+    empty: TMenuItem;
     miExit: TMenuItem;
     Timer: TTimer;
     cbAutoHide: TCheckBox;
@@ -63,6 +63,9 @@ type
     edBrightness: TEdit;
     edGamma: TEdit;
     btnRename: TButton;
+    pmProxyAddMenu: TPopupMenu;
+    miAddProxyManually: TMenuItem;
+    miUseParser: TMenuItem;
     procedure btnSetPathToClientClick(Sender: TObject);
     procedure cbAutoPlayClick(Sender: TObject);
     procedure btnReloadTokensClick(Sender: TObject);
@@ -76,7 +79,6 @@ type
     procedure TrayIconClick(Sender: TObject);
     procedure ApplicationEventsMinimize(Sender: TObject);
     procedure btnRunClick(Sender: TObject);
-    procedure btnAddProxyClick(Sender: TObject);
     procedure btnSaveProxyToClientClick(Sender: TObject);
     procedure btnClearProxyListClick(Sender: TObject);
     procedure btnDeleteProxyClick(Sender: TObject);
@@ -93,6 +95,11 @@ type
     procedure cbUseWindowFrameClick(Sender: TObject);
     procedure cbUseJoystickClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
+    procedure miAddProxyManuallyClick(Sender: TObject);
+    procedure btnAddProxyClick(Sender: TObject);
+    procedure miUseParserClick(Sender: TObject);
+    procedure lvProxyListKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -130,12 +137,17 @@ implementation
 
 {$R *.dfm}
 
-uses addproxyform, proxydestform, testproxyform;
+uses addproxyform, proxydestform, testproxyform, proxyparserform;
 
 procedure TfrmMain.ApplicationEventsMinimize(Sender: TObject);
 begin
   frmMain.Hide;
   TrayIcon.Visible := True;
+end;
+
+procedure TfrmMain.btnAddProxyClick(Sender: TObject);
+begin
+  miAddProxyManually.Click;
 end;
 
 procedure TfrmMain.btnAddTokenToListClick(Sender: TObject);
@@ -304,28 +316,6 @@ begin
   btnTestProxy.Enabled := False;
   Timer.Enabled := True;
   frmTestProxy.Free;
-end;
-
-procedure TfrmMain.btnAddProxyClick(Sender: TObject);
-var
-  frmNewProxy: TfrmAddProxy;
-  ListItem: TListItem;
-begin
-  frmNewProxy := TfrmAddProxy.Create(Self);
-  if frmNewProxy.ShowModal = mrOk then
-  begin
-    ListItem := lvProxyList.Items.Add;
-    ListItem.Caption := frmNewProxy.ProxyHost;
-    with ListItem.SubItems do
-    begin
-      Add(frmNewProxy.ProxyPort.ToString);
-      Add(frmNewProxy.ProxyType);
-      Add(frmNewProxy.ProxyUser);
-      Add(frmNewProxy.ProxyPassword);
-    end;
-    SaveAppSettings;
-  end;
-  frmNewProxy.Free;
 end;
 
 procedure TfrmMain.ReadCurrentToken;
@@ -587,6 +577,28 @@ begin
   iniFile.Free;
 end;
 
+procedure TfrmMain.miAddProxyManuallyClick(Sender: TObject);
+var
+  frmNewProxy: TfrmAddProxy;
+  ListItem: TListItem;
+begin
+  frmNewProxy := TfrmAddProxy.Create(Self);
+  if frmNewProxy.ShowModal = mrOk then
+  begin
+    ListItem := lvProxyList.Items.Add;
+    ListItem.Caption := frmNewProxy.ProxyHost;
+    with ListItem.SubItems do
+    begin
+      Add(frmNewProxy.ProxyPort.ToString);
+      Add(frmNewProxy.ProxyType);
+      Add(frmNewProxy.ProxyUser);
+      Add(frmNewProxy.ProxyPassword);
+    end;
+    SaveAppSettings;
+  end;
+  frmNewProxy.Free;
+end;
+
 procedure TfrmMain.miExitClick(Sender: TObject);
 begin
   Application.Terminate;
@@ -595,6 +607,46 @@ end;
 procedure TfrmMain.miLastTokenClick(Sender: TObject);
 begin
   RunWithToken(LastToken);
+end;
+
+procedure TfrmMain.miUseParserClick(Sender: TObject);
+var
+  frmProxyParser: TfrmProxyParser;
+  i: Integer;
+  ListItem: TListItem;
+  ProxyString: TStringList;
+begin
+  frmProxyParser := TfrmProxyParser.Create(Self);
+  if frmProxyParser.ShowModal = mrOk then
+  begin
+    for I := 0 to frmProxyParser.ProxyList.Count - 1 do
+    begin
+      ProxyString := TStringList.Create;
+      ProxyString.Delimiter := ':';
+      ProxyString.DelimitedText := frmProxyParser.ProxyList[i];
+      ListItem := lvProxyList.Items.Add;
+      ListItem.Caption := ProxyString[0];
+      with ListItem.SubItems do
+      begin
+        Add(ProxyString[1]);
+        Add('HTTP');
+        Add('');
+        Add('');
+      end;
+      ListItem := lvProxyList.Items.Add;
+      ListItem.Caption := ProxyString[0];
+      with ListItem.SubItems do
+      begin
+        Add(ProxyString[1]);
+        Add('HTTPS');
+        Add('');
+        Add('');
+      end;
+      ProxyString.Free;
+    SaveAppSettings;
+    end;
+  end;
+  frmProxyParser.Free;
 end;
 
 procedure TfrmMain.SaveProxy(Filename, ProxyHost,ProxyPort, ProxyType, ProxyUser, ProxyPassword: String);
@@ -647,6 +699,25 @@ begin
       cmbCacheSizeMegs.ItemIndex := 0;
   edReplayTimeLimit.Text := iniFile.ReadInteger('Options', 'ReplayTimeLimit', 30).ToString;
   iniFile.Free;
+end;
+
+procedure TfrmMain.lvProxyListKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  LastIndex: Integer;
+begin
+  if Key = VK_DELETE then
+    if lvProxyList.ItemIndex >= 0 then
+    begin
+      LastIndex := lvProxyList.Selected.Index;
+      lvProxyList.Items[LastIndex].Delete;
+      if (LastIndex <= lvProxyList.Items.Count - 1) then
+        lvProxyList.ItemIndex := LastIndex
+      else
+        if lvProxyList.Items.Count > 0 then
+          lvProxyList.ItemIndex := lvProxyList.Items.Count - 1;
+      SaveAppSettings;
+    end;
 end;
 
 procedure TfrmMain.SaveClientSettings;

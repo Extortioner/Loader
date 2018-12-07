@@ -7435,8 +7435,6 @@ object frmMain: TfrmMain
     TabOrder = 0
     object tsLogin: TTabSheet
       Caption = #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103
-      ExplicitLeft = 8
-      ExplicitTop = 28
       DesignSize = (
         516
         368)
@@ -7591,6 +7589,8 @@ object frmMain: TfrmMain
         Height = 25
         Anchors = [akLeft, akBottom]
         Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '
+        DropDownMenu = pmProxyAddMenu
+        Style = bsSplitButton
         TabOrder = 0
         OnClick = btnAddProxyClick
       end
@@ -7628,6 +7628,7 @@ object frmMain: TfrmMain
         RowSelect = True
         TabOrder = 1
         ViewStyle = vsReport
+        OnKeyDown = lvProxyListKeyDown
       end
       object btnDeleteProxy: TButton
         Left = 84
@@ -7862,7 +7863,7 @@ object frmMain: TfrmMain
     FileTypes = <>
     Options = [fdoPickFolders]
     Left = 84
-    Top = 344
+    Top = 104
   end
   object TrayIcon: TTrayIcon
     Icon.Data = {
@@ -15274,11 +15275,11 @@ object frmMain: TfrmMain
     PopupMenu = pmTrayMenu
     OnClick = TrayIconClick
     Left = 132
-    Top = 344
+    Top = 104
   end
   object pmTrayMenu: TPopupMenu
-    Left = 28
-    Top = 344
+    Left = 20
+    Top = 104
     object miLastToken: TMenuItem
       Caption = #1055#1086#1089#1083#1077#1076#1085#1080#1081' '#1079#1072#1087#1091#1097#1077#1085#1085#1099#1081
       OnClick = miLastTokenClick
@@ -15287,7 +15288,7 @@ object frmMain: TfrmMain
       Caption = #1054#1090#1082#1088#1099#1090#1100' '#1087#1088#1086#1075#1088#1072#1084#1084#1091
       OnClick = TrayIconClick
     end
-    object N3: TMenuItem
+    object empty: TMenuItem
       Caption = '-'
     end
     object miExit: TMenuItem
@@ -15299,12 +15300,24 @@ object frmMain: TfrmMain
     Enabled = False
     Interval = 10000
     OnTimer = TimerTimer
-    Left = 172
-    Top = 344
+    Left = 180
+    Top = 104
   end
   object ApplicationEvents: TApplicationEvents
     OnMinimize = ApplicationEventsMinimize
-    Left = 228
-    Top = 347
+    Left = 220
+    Top = 107
+  end
+  object pmProxyAddMenu: TPopupMenu
+    Left = 292
+    Top = 112
+    object miAddProxyManually: TMenuItem
+      Caption = #1042#1088#1091#1095#1085#1091#1102
+      OnClick = miAddProxyManuallyClick
+    end
+    object miUseParser: TMenuItem
+      Caption = #1055#1072#1088#1089#1077#1088
+      OnClick = miUseParserClick
+    end
   end
 end

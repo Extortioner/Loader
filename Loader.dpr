@@ -6,7 +6,9 @@ uses
   mainform in 'mainform.pas' {frmMain},
   addproxyform in 'addproxyform.pas' {frmAddProxy},
   proxydestform in 'proxydestform.pas' {frmProxyDestination},
-  testproxyform in 'testproxyform.pas' {frmTestProxy};
+  testproxyform in 'testproxyform.pas' {frmTestProxy},
+  RegExpr in 'RegExpr.pas',
+  proxyparserform in 'proxyparserform.pas' {frmProxyParser};
 
 {$R *.res}
 
