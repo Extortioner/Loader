@@ -3,12 +3,12 @@ program Loader;
 uses
   Vcl.Forms,
   Winapi.Windows,
-  mainform in 'mainform.pas' {frmMain},
-  addproxyform in 'addproxyform.pas' {frmAddProxy},
-  proxydestform in 'proxydestform.pas' {frmProxyDestination},
-  testproxyform in 'testproxyform.pas' {frmTestProxy},
-  RegExpr in 'RegExpr.pas',
-  proxyparserform in 'proxyparserform.pas' {frmProxyParser};
+  RegExpr in 'Core\RegExpr.pas',
+  addproxyform in 'UI\addproxyform.pas' {frmAddProxy},
+  mainform in 'UI\mainform.pas' {frmMain},
+  proxydestform in 'UI\proxydestform.pas' {frmProxyDestination},
+  proxyparserform in 'UI\proxyparserform.pas' {frmProxyParser},
+  testproxyform in 'UI\testproxyform.pas' {frmTestProxy};   
 
 {$R *.res}
 
